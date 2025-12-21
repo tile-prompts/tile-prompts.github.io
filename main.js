@@ -221,6 +221,39 @@ async function loadTraitSets() {
   }
 }
 
+function clearAllTilesAndRefill() {
+  const tiles = Array.from(tilesRoot.children);
+
+  tiles.forEach(tile => {
+    const phrase = tile.textContent;
+
+    if (tile.classList.contains("role-tile")) {
+      returnRoleToPile(phrase);
+    }
+
+    if (tile.classList.contains("trait-tile")) {
+      returnTraitToPile(phrase);
+    }
+
+    if (tile.classList.contains("situation-tile")) {
+      returnSituationToPile(phrase);
+    }
+
+    tile.remove();
+  });
+
+  refillRoleDrawPile();
+  refillTraitDrawPile();
+  refillSituationDrawPile();
+
+  updateRoleButtonState();
+  updateTraitButtonState();
+  updateSituationButtonState();
+}
+
+const clearTilesBtn = document.querySelector("#btn-clear-tiles");
+clearTilesBtn.addEventListener("click", clearAllTilesAndRefill);
+
 (async () => {
   await loadRoleSets();
   updateActiveRoles();
