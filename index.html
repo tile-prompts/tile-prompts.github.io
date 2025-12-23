@@ -1,3 +1,5 @@
+<!--Todo: actually do contact, donate, and about links and create pages for them-->
+<!--Todo: also put all contact, donate, and about info into the README.md-->
 <!doctype html>
 <html lang="en">
 <head>
@@ -9,13 +11,15 @@
 <body>
 <main class="page">
   <div class="content">
-    <section class="panel left" aria-label="Left Panel">
-      <div class="left-inner">
+    <div id="setup">
+      <section class="panel left" aria-label="Left Panel">
         <div class="panel-tabs" role="tablist" aria-label="Menu mode">
-          <button class="panel-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="menu-setup" id="tab-setup" data-tab="setup">
+          <button class="panel-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="menu-setup"
+                  id="tab-setup" data-tab="setup">
             Setup
           </button>
-          <button disabled class="panel-tab" type="button" role="tab" aria-selected="false" aria-controls="menu-sets" id="tab-sets" data-tab="sets">
+          <button disabled class="panel-tab" type="button" role="tab" aria-selected="false" aria-controls="menu-sets"
+                  id="tab-sets" data-tab="sets">
             Sets
           </button>
         </div>
@@ -23,21 +27,21 @@
         <div class="panel-body">
           <nav class="menu is-active" id="menu-setup" role="tablist" aria-labelledby="tab-setup">
             <ul class="menu-list">
-              <li><button type="button" class="menu-item" id="btn-add-role">+ Role</button></li>
-              <li><button type="button" class="menu-item" id="btn-add-trait">+ Trait</button></li>
-              <li><button type="button" class="menu-item" id="btn-clear-tiles">Clear All Tiles</button></li>
+              <li>
+                <button type="button" class="menu-item" id="btn-clear-tiles">Clear All Tiles</button>
+              </li>
               <li>
                 <label class="menu-item checkbox">
-                  <input disabled type="checkbox" />
+                  <input disabled type="checkbox"/>
                   <span class="box" aria-hidden="true"></span>
-                  <span class="label-text">Place</span>
+                  <span class="label-text">Place (Coming Soon)</span>
                 </label>
               </li>
               <li>
                 <label class="menu-item checkbox">
-                  <input disabled type="checkbox" />
+                  <input disabled type="checkbox"/>
                   <span class="box" aria-hidden="true"></span>
-                  <span class="label-text">Task</span>
+                  <span class="label-text">Task (Coming Soon)</span>
                 </label>
               </li>
             </ul>
@@ -69,7 +73,9 @@
 
           <nav class="menu" id="menu-sets" role="tablist" aria-labelledby="tab-sets" hidden>
             <ul class="menu-list">
-              <li><button type="button" class="menu-item">[UNDER CONSTRUCTION]</button></li>
+              <li>
+                <button type="button" class="menu-item">[UNDER CONSTRUCTION]</button>
+              </li>
             </ul>
           </nav>
         </div>
@@ -81,25 +87,45 @@
             <span class="label-text">Advanced Mode (Coming Soon)</span>
           </label>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
 
-    <section class="panel right" aria-label="Right Panel">
-      <div class="right-inner" id="tiles"></div>
-    </section>
+    <div id="prompt">
+      <div id="characters">
+        <section class="panel char" aria-label="Character Panel 1">
+          <div class="char-tab">
+            <div class="char-name">Character 1</div>
+            <div class="char-actions" aria-label="Character actions">
+              <button class="char-btn char-reroll" type="button" aria-label="Reroll character">↻</button>
+              <button class="char-btn char-add-tile" type="button" aria-label="Add tile">+</button>
+              <button class="char-btn char-clear" type="button" aria-label="Clear character tiles">✕</button>
+              <button class="char-btn char-delete" type="button" aria-label="Delete character">🗑</button>
+            </div>
+          </div>
+          <div class="character-inner tile-holder"></div>
+        </section>
+
+        <section class="panel add" aria-label="Add Character Panel"></section>
+      </div>
+
+      <div id="meta">
+        <section class="panel"></section>
+      </div>
+    </div>
   </div>
 </main>
+
 <footer>
   <div class="footer-inner">
     <div class="license">Tile Prompt Generator. © FleeceComrade 2025. All Rights Reserved.</div>
     <nav class="footer-links" aria-label="Footer Links">
       <a href="#contact">Contact</a>
       <a href="#donate">Donate</a>
-      <a href="#legal">Legal</a>
       <a href="#about">About</a>
     </nav>
   </div>
 </footer>
+
 <script src="main.js"></script>
 </body>
 </html>
