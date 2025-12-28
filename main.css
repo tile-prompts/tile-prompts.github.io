@@ -81,11 +81,13 @@ main.page {
 #setup,
 #prompt {
   height: 100%;
+  max-height: calc(100vh - var(--gap) - var(--footer-height));
   padding: 0;
 }
 
 #setup .panel {
-  height: 100.5%;
+  min-height: 100.5%;
+  max-height: calc(100vh - var(--gap)*3 - var(--footer-height));
 }
 
 #prompt {

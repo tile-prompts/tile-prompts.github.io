@@ -1,5 +1,5 @@
-<!--Todo: actually do contact, donate, and about links and create pages for them-->
-<!--Todo: also put all contact, donate, and about info into the README.md-->
+<!--Todo: Remove Include Place, and Include Task buttons, they should always be an option-->
+<!--Todo: -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -18,7 +18,7 @@
                   id="tab-setup" data-tab="setup">
             Setup
           </button>
-          <button disabled class="panel-tab" type="button" role="tab" aria-selected="false" aria-controls="menu-sets"
+          <button class="panel-tab" type="button" role="tab" aria-selected="false" aria-controls="menu-sets"
                   id="tab-sets" data-tab="sets">
             Sets
           </button>
@@ -32,16 +32,16 @@
               </li>
               <li>
                 <label class="menu-item checkbox">
-                  <input disabled type="checkbox"/>
+                  <input id="toggle-place" type="checkbox" checked/>
                   <span class="box" aria-hidden="true"></span>
-                  <span class="label-text">Place (Coming Soon)</span>
+                  <span class="label-text">Include Place</span>
                 </label>
               </li>
               <li>
                 <label class="menu-item checkbox">
-                  <input disabled type="checkbox"/>
+                  <input id="toggle-task" type="checkbox" checked/>
                   <span class="box" aria-hidden="true"></span>
-                  <span class="label-text">Task (Coming Soon)</span>
+                  <span class="label-text">Include Task</span>
                 </label>
               </li>
             </ul>
@@ -49,21 +49,21 @@
             <ul class="menu-list">
               <li>
                 <label class="menu-item checkbox">
-                  <input type="checkbox" class="update-role-tiers" data-chars="<-" checked/>
+                  <input type="checkbox" class="update-power-tiers" data-chars="<-" checked/>
                   <span class="box" aria-hidden="true"></span>
                   <span class="label-text">Allow Underpowered</span>
                 </label>
               </li>
               <li>
                 <label class="menu-item checkbox">
-                  <input type="checkbox" class="update-role-tiers" data-chars="=" checked/>
+                  <input type="checkbox" class="update-power-tiers" data-chars="=" checked/>
                   <span class="box" aria-hidden="true"></span>
                   <span class="label-text">Allow Average-powered</span>
                 </label>
               </li>
               <li>
                 <label class="menu-item checkbox">
-                  <input type="checkbox" class="update-role-tiers" data-chars="+>" checked/>
+                  <input type="checkbox" class="update-power-tiers" data-chars="+>" checked/>
                   <span class="box" aria-hidden="true"></span>
                   <span class="label-text">Allow Overpowered</span>
                 </label>
@@ -72,10 +72,24 @@
           </nav>
 
           <nav class="menu" id="menu-sets" role="tablist" aria-labelledby="tab-sets" hidden>
-            <ul class="menu-list">
-              <li>
-                <button type="button" class="menu-item">[UNDER CONSTRUCTION]</button>
-              </li>
+            <ul class="menu-list" id="sets-role">
+              <li><div class="menu-item disabled">Role Sets</div></li>
+            </ul>
+            <hr>
+            <ul class="menu-list" id="sets-trait">
+              <li><div class="menu-item disabled">Trait Sets</div></li>
+            </ul>
+            <hr>
+            <ul class="menu-list" id="sets-situation">
+              <li><div class="menu-item disabled">Situation Sets</div></li>
+            </ul>
+            <hr>
+            <ul class="menu-list" id="sets-place">
+              <li><div class="menu-item disabled">Place Sets</div></li>
+            </ul>
+            <hr>
+            <ul class="menu-list" id="sets-task">
+              <li><div class="menu-item disabled">Task Sets</div></li>
             </ul>
           </nav>
         </div>
@@ -109,7 +123,18 @@
       </div>
 
       <div id="meta">
-        <section class="panel"></section>
+        <section class="panel char meta" id="meta-panel" aria-label="Meta Panel">
+          <div class="char-tab meta-tab">
+            <div class="char-name">Meta</div>
+            <div class="char-actions" aria-label="Meta actions">
+              <button class="char-btn meta-reroll" type="button" aria-label="Reroll meta">↻</button>
+              <button class="char-btn meta-add-tile" type="button" aria-label="Add meta tile">+</button>
+              <button class="char-btn meta-clear" type="button" aria-label="Clear meta tiles">✕</button>
+              <button class="char-btn meta-delete" type="button" aria-label="Reset meta">🗑</button>
+            </div>
+          </div>
+          <div class="character-inner tile-holder" id="meta-holder"></div>
+        </section>
       </div>
     </div>
   </div>
@@ -119,9 +144,9 @@
   <div class="footer-inner">
     <div class="license">Tile Prompt Generator. © FleeceComrade 2025. All Rights Reserved.</div>
     <nav class="footer-links" aria-label="Footer Links">
-      <a href="#contact">Contact</a>
-      <a href="#donate">Donate</a>
-      <a href="#about">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="donate.html">Donate</a>
+      <a href="about.html">About</a>
     </nav>
   </div>
 </footer>

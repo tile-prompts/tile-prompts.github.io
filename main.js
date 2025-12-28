@@ -1,31 +1,56 @@
-//Todo: make role tiles always first within a character panel
-//Todo: add quick reroll option to individual tiles
-//Todo: fix character reroll button
-//Todo: set up a marvel.set, an anime.set, a video-games.set
-//Todo: implement Sets tab of setup panel and the ability to toggle sets on and off, adding/removing them from the drawpiles
-//Todo: create all the .set files for situations, places, and tasks
-/*Todo: Give meta panel a top-tab similar to char-tab, with the same buttons, but its add-tile dropdown
-        will have "+ Place", "+ Task", and "+ Situation"
-*/
 const menuTabs = Array.from(document.querySelectorAll(".panel-tab"));
 const menus = Array.from(document.querySelectorAll(".menu"));
 
 const roles = new Map();
+let activeRoleSets = ["standard", "bonus"];
 let activeRoles = [];
 let roleDrawPile = [];
-let activeRoleSets = ["standard", "bonus"];
 
 const traits = new Map();
+let activeTraitSets = ["standard"];
 let activeTraits = [];
 let traitDrawPile = [];
-let activeTraitSets = ["standard", "bonus"];
+
+const situations = new Map();
+let activeSituationSets = ["standard"];
+let activeSituations = [];
+let situationDrawPile = [];
+
+const places = new Map();
+let activePlaceSets = ["standard"];
+let activePlaces = [];
+let placeDrawPile = [];
+
+const tasks = new Map();
+let activeTaskSets = ["standard"];
+let activeTasks = [];
+let taskDrawPile = [];
 
 let activePowerTiers = "<-=+>";
+let allowPlace = true;
+let allowTask = true;
 
 const charactersRoot = document.querySelector("#characters");
 const clearTilesBtn = document.querySelector("#btn-clear-tiles");
+const togglePlaceEl = document.querySelector("#toggle-place");
+const toggleTaskEl = document.querySelector("#toggle-task");
 
-let lastActiveCharPanel = null;
+const setsRoleList = document.querySelector("#sets-role");
+const setsTraitList = document.querySelector("#sets-trait");
+const setsSituationList = document.querySelector("#sets-situation");
+const setsPlaceList = document.querySelector("#sets-place");
+const setsTaskList = document.querySelector("#sets-task");
+
+const metaPanel = document.querySelector("#meta-panel");
+const metaHolder = document.querySelector("#meta-holder");
+
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+}
 
 function setActive(tabName) {
   menuTabs.forEach(t => {
@@ -73,10 +98,7 @@ function enableSmoothHorizontalScroll(element) {
       event.preventDefault();
 
       targetScroll += event.deltaY;
-      targetScroll = Math.max(
-        0,
-        Math.min(targetScroll, element.scrollWidth - element.clientWidth)
-      );
+      targetScroll = Math.max(0, Math.min(targetScroll, element.scrollWidth - element.clientWidth));
 
       if (!isAnimating) {
         isAnimating = true;
@@ -88,6 +110,94 @@ function enableSmoothHorizontalScroll(element) {
 }
 
 enableSmoothHorizontalScroll(charactersRoot);
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+}
+
+function parseSetEntries(text) {
+  return text
+    .split("\n")
+    .map(l => l.trim())
+    .filter(l => l && !l.startsWith("#"));
+}
+
+function buildActiveFromSets(map, activeSetNames) {
+  const out = [];
+  activeSetNames.forEach(setName => {
+    const set = map.get(setName) || [];
+    set.forEach(s => {
+      if (s && activePowerTiers.includes(s[0])) out.push(s.slice(1));
+    });
+  });
+  return out;
+}
+
+function rebuildRolePools() {
+  activeRoles = buildActiveFromSets(roles, activeRoleSets);
+  roleDrawPile = [...activeRoles];
+  shuffle(roleDrawPile);
+}
+
+function rebuildTraitPools() {
+  activeTraits = buildActiveFromSets(traits, activeTraitSets);
+  traitDrawPile = [...activeTraits];
+  shuffle(traitDrawPile);
+}
+
+function rebuildSituationPools() {
+  activeSituations = buildActiveFromSets(situations, activeSituationSets);
+  situationDrawPile = [...activeSituations];
+  shuffle(situationDrawPile);
+}
+
+function rebuildPlacePools() {
+  activePlaces = buildActiveFromSets(places, activePlaceSets);
+  placeDrawPile = [...activePlaces];
+  shuffle(placeDrawPile);
+}
+
+function rebuildTaskPools() {
+  activeTasks = buildActiveFromSets(tasks, activeTaskSets);
+  taskDrawPile = [...activeTasks];
+  shuffle(taskDrawPile);
+}
+
+function rebuildAllPools() {
+  rebuildRolePools();
+  rebuildTraitPools();
+  rebuildSituationPools();
+  rebuildPlacePools();
+  rebuildTaskPools();
+}
+
+function takeFromPile(activeList, pile) {
+  if (!activeList || activeList.length === 0) return null;
+  const v = pile.pop();
+  return v === undefined ? null : v;
+}
+
+function createTile(type, phrase) {
+  const tile = document.createElement("div");
+  tile.className = `tile ${type}`;
+  tile.textContent = phrase;
+  return tile;
+}
+
+function countTiles(holder, type) {
+  return holder.querySelectorAll(`.tile.${type}`).length;
+}
+
+function discardTiles(holder, type) {
+  const tiles = Array.from(holder.querySelectorAll(`.tile.${type}`));
+  tiles.forEach(t => t.remove());
+  return tiles.length;
+}
+
+let lastActiveCharPanel = null;
 
 function getActiveCharacterPanel() {
   if (lastActiveCharPanel && lastActiveCharPanel.isConnected) return lastActiveCharPanel;
@@ -105,82 +215,15 @@ function getTileHolder(panel) {
   return panel.querySelector(".tile-holder");
 }
 
-function getFirstTraitTileNodeIn(holder) {
-  if (!holder) return null;
-  return holder.querySelector(".trait-tile");
-}
-
-function updateActiveRoles() {
-  activeRoles = [];
-  activeRoleSets.forEach(setName => {
-    const set = roles.get(setName) || [];
-    const filteredSet = set
-      .filter(s => s && activePowerTiers.includes(s[0]))
-      .map(s => s.slice(1));
-    activeRoles.push(...filteredSet);
-  });
-}
-
-function refillRoleDrawPile() {
-  roleDrawPile = [...activeRoles];
-  shuffleRoleDrawPile();
-}
-
-function shuffleRoleDrawPile() {
-  for (let i = roleDrawPile.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [roleDrawPile[i], roleDrawPile[j]] = [roleDrawPile[j], roleDrawPile[i]];
-  }
-}
-
-function pickRandomRole() {
-  if (!activeRoles || activeRoles.length === 0) return null;
-  return roleDrawPile.pop();
-}
-
-function updateActiveTraits() {
-  activeTraits = [];
-  activeTraitSets.forEach(setName => {
-    const set = traits.get(setName) || [];
-    const filteredSet = set
-      .filter(s => s && activePowerTiers.includes(s[0]))
-      .map(s => s.slice(1));
-    activeTraits.push(...filteredSet);
-  });
-}
-
-function refillTraitDrawPile() {
-  traitDrawPile = [...activeTraits];
-  shuffleTraitDrawPile();
-}
-
-function shuffleTraitDrawPile() {
-  for (let i = traitDrawPile.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [traitDrawPile[i], traitDrawPile[j]] = [traitDrawPile[j], traitDrawPile[i]];
-  }
-}
-
-function pickRandomTrait() {
-  if (!activeTraits || activeTraits.length === 0) return null;
-  return traitDrawPile.pop();
-}
-
 function addRoleTileToPanel(panel) {
   const holder = getTileHolder(panel);
   if (!holder) return;
-
-  const phrase = pickRandomRole();
+  const phrase = takeFromPile(activeRoles, roleDrawPile);
   if (!phrase) return;
-
-  const tile = document.createElement("div");
-  tile.className = "role tile";
-  tile.textContent = phrase;
-
-  const firstTraitTile = getFirstTraitTileNodeIn(holder);
+  const tile = createTile("role", phrase);
+  const firstTraitTile = holder.querySelector(".tile.trait");
   if (firstTraitTile) holder.insertBefore(tile, firstTraitTile);
   else holder.appendChild(tile);
-
   updateRerollButtons();
   updateCharAddDropdownButtons(panel);
 }
@@ -188,67 +231,43 @@ function addRoleTileToPanel(panel) {
 function addTraitTileToPanel(panel) {
   const holder = getTileHolder(panel);
   if (!holder) return;
-
-  const phrase = pickRandomTrait();
+  const phrase = takeFromPile(activeTraits, traitDrawPile);
   if (!phrase) return;
-
-  const tile = document.createElement("div");
-  tile.className = "trait tile";
-  tile.textContent = phrase;
-
+  const tile = createTile("trait", phrase);
   holder.appendChild(tile);
-
   updateRerollButtons();
   updateCharAddDropdownButtons(panel);
 }
 
-function discardTilesOfType(holder, className) {
-  const tiles = Array.from(holder.querySelectorAll("." + className));
-  tiles.forEach(t => t.remove());
-  return tiles.length;
-}
-
-function clearPanelTilesAndRefill(panel) {
+function clearCharacterTilesDiscard(panel) {
   const holder = getTileHolder(panel);
   if (!holder) return;
-
-  const tiles = Array.from(holder.children);
-  tiles.forEach(tile => tile.remove());
-
+  discardTiles(holder, "role");
+  discardTiles(holder, "trait");
   updateRerollButtons();
   updateCharAddDropdownButtons(panel);
 }
 
-function clearPanelTilesAndDiscard(panel) {
+function clearCharacterTilesRefill(panel) {
   const holder = getTileHolder(panel);
   if (!holder) return;
-
-  discardTilesOfType(holder, "role-tile");
-  discardTilesOfType(holder, "trait-tile");
-
+  Array.from(holder.querySelectorAll(".tile")).forEach(t => t.remove());
   updateRerollButtons();
   updateCharAddDropdownButtons(panel);
-}
-
-function clearAllTilesAndRefill() {
-  const panels = Array.from(charactersRoot.querySelectorAll(".panel.char"));
-  panels.forEach(p => clearPanelTilesAndRefill(p));
-
-  refillRoleDrawPile();
-  refillTraitDrawPile();
-
-  updateRerollButtons();
-  updateAllCharAddDropdownButtons();
 }
 
 function rerollCharacter(panel) {
   const holder = getTileHolder(panel);
   if (!holder) return;
 
-  const roleCount = holder.querySelectorAll(".role-tile").length;
-  const traitCount = holder.querySelectorAll(".trait-tile").length;
+  const roleCount = countTiles(holder, "role");
+  const traitCount = countTiles(holder, "trait");
 
-  if (roleCount === 0 && traitCount === 0) return;
+  if (roleCount === 0 && traitCount === 0) {
+    updateRerollButtons();
+    updateCharAddDropdownButtons(panel);
+    return;
+  }
 
   if (roleDrawPile.length < roleCount || traitDrawPile.length < traitCount) {
     updateRerollButtons();
@@ -256,8 +275,8 @@ function rerollCharacter(panel) {
     return;
   }
 
-  discardTilesOfType(holder, "role-tile");
-  discardTilesOfType(holder, "trait-tile");
+  discardTiles(holder, "role");
+  discardTiles(holder, "trait");
 
   for (let i = 0; i < roleCount; i++) addRoleTileToPanel(panel);
   for (let i = 0; i < traitCount; i++) addTraitTileToPanel(panel);
@@ -268,27 +287,23 @@ function rerollCharacter(panel) {
 
 function updateRerollButtons() {
   const panels = charactersRoot.querySelectorAll(".panel.char");
-
   panels.forEach(panel => {
     const holder = getTileHolder(panel);
     const rerollBtn = panel.querySelector(".char-reroll");
     if (!holder || !rerollBtn) return;
 
-    const roleCount = holder.querySelectorAll(".role-tile").length;
-    const traitCount = holder.querySelectorAll(".trait-tile").length;
-
-    const canReroll =
-      roleDrawPile.length >= roleCount &&
-      traitDrawPile.length >= traitCount;
-
+    const roleCount = countTiles(holder, "role");
+    const traitCount = countTiles(holder, "trait");
+    const hasTiles = roleCount + traitCount > 0;
+    const canReroll = hasTiles && roleDrawPile.length >= roleCount && traitDrawPile.length >= traitCount;
     rerollBtn.disabled = !canReroll;
   });
 }
 
 function deleteCharacter(panel) {
   if (!panel) return;
-  closeAllCharDropdowns();
-  clearPanelTilesAndRefill(panel);
+  closeAllDropdowns();
+  clearCharacterTilesRefill(panel);
   panel.remove();
 
   if (lastActiveCharPanel === panel) lastActiveCharPanel = null;
@@ -364,7 +379,7 @@ function buildCharacterPanel(index) {
   return newCharacterPanel;
 }
 
-function closeAllCharDropdowns() {
+function closeAllDropdowns() {
   const dropdowns = document.querySelectorAll(".char-dropdown");
   dropdowns.forEach(d => d.remove());
 }
@@ -389,17 +404,10 @@ function openCharAddDropdown(panel, btn) {
   const tab = panel.querySelector(".char-tab");
   if (!tab) return;
 
-  closeAllCharDropdowns();
+  closeAllDropdowns();
 
   const dropdown = document.createElement("div");
   dropdown.className = "char-dropdown";
-
-  const traitOption = document.createElement("button");
-  traitOption.type = "button";
-  traitOption.className = "char-dropdown-item";
-  traitOption.textContent = "+ Trait";
-  traitOption.dataset.option = "trait";
-  traitOption.disabled = traitDrawPile.length === 0;
 
   const roleOption = document.createElement("button");
   roleOption.type = "button";
@@ -408,44 +416,62 @@ function openCharAddDropdown(panel, btn) {
   roleOption.dataset.option = "role";
   roleOption.disabled = roleDrawPile.length === 0;
 
-  traitOption.addEventListener("click", () => {
-    closeAllCharDropdowns();
-    addTraitTileToPanel(panel);
-  });
+  const traitOption = document.createElement("button");
+  traitOption.type = "button";
+  traitOption.className = "char-dropdown-item";
+  traitOption.textContent = "+ Trait";
+  traitOption.dataset.option = "trait";
+  traitOption.disabled = traitDrawPile.length === 0;
 
   roleOption.addEventListener("click", () => {
-    closeAllCharDropdowns();
+    closeAllDropdowns();
     addRoleTileToPanel(panel);
+  });
+
+  traitOption.addEventListener("click", () => {
+    closeAllDropdowns();
+    addTraitTileToPanel(panel);
   });
 
   dropdown.appendChild(roleOption);
   dropdown.appendChild(traitOption);
-
   tab.appendChild(dropdown);
 
   const tabRect = tab.getBoundingClientRect();
   const btnRect = btn.getBoundingClientRect();
   const centerX = btnRect.left + btnRect.width / 2;
   const leftPx = centerX - tabRect.left;
-
   dropdown.style.left = leftPx + "px";
+}
+
+function commitCharNameEdit(nameEl, inputEl) {
+  const value = (inputEl.value || "").trim();
+  inputEl.remove();
+  nameEl.textContent = value || "Character";
+  nameEl.dataset.editing = "";
+}
+
+function cancelCharNameEdit(nameEl, inputEl, previousValue) {
+  inputEl.remove();
+  nameEl.textContent = previousValue || "Character";
+  nameEl.dataset.editing = "";
 }
 
 document.addEventListener("click", (e) => {
   const inDropdown = e.target.closest(".char-dropdown");
-  const inAddBtn = e.target.closest(".char-add-tile");
+  const inAddBtn = e.target.closest(".char-add-tile") || e.target.closest(".meta-add-tile");
   if (inDropdown || inAddBtn) return;
-  closeAllCharDropdowns();
+  closeAllDropdowns();
 });
 
 document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") closeAllCharDropdowns();
+  if (e.key === "Escape") closeAllDropdowns();
 });
 
 charactersRoot.addEventListener("click", (e) => {
   const addPanel = e.target.closest(".panel.add");
   if (addPanel) {
-    closeAllCharDropdowns();
+    closeAllDropdowns();
     addPanel.classList.add("is-activating");
 
     const index = charactersRoot.querySelectorAll(".panel.char").length + 1;
@@ -471,7 +497,7 @@ charactersRoot.addEventListener("click", (e) => {
 
   const rerollBtn = e.target.closest(".char-reroll");
   if (rerollBtn) {
-    closeAllCharDropdowns();
+    closeAllDropdowns();
     const panel = rerollBtn.closest(".panel.char");
     if (panel) {
       setActiveCharacterPanel(panel);
@@ -486,7 +512,7 @@ charactersRoot.addEventListener("click", (e) => {
     if (panel) {
       setActiveCharacterPanel(panel);
       const existing = panel.querySelector(".char-dropdown");
-      if (existing) closeAllCharDropdowns();
+      if (existing) closeAllDropdowns();
       else openCharAddDropdown(panel, addTileBtn);
     }
     return;
@@ -494,42 +520,22 @@ charactersRoot.addEventListener("click", (e) => {
 
   const clearBtn = e.target.closest(".char-clear");
   if (clearBtn) {
-    closeAllCharDropdowns();
+    closeAllDropdowns();
     const panel = clearBtn.closest(".panel.char");
     if (panel) {
       setActiveCharacterPanel(panel);
-      clearPanelTilesAndDiscard(panel);
+      clearCharacterTilesDiscard(panel);
     }
     return;
   }
 
   const deleteBtn = e.target.closest(".char-delete");
   if (deleteBtn) {
-    closeAllCharDropdowns();
+    closeAllDropdowns();
     const panel = deleteBtn.closest(".panel.char");
     if (panel) deleteCharacter(panel);
     return;
   }
-});
-
-function commitCharNameEdit(nameEl, inputEl) {
-  const value = (inputEl.value || "").trim();
-  inputEl.remove();
-  nameEl.textContent = value || "Character";
-  nameEl.dataset.editing = "";
-}
-
-function cancelCharNameEdit(nameEl, inputEl, previousValue) {
-  inputEl.remove();
-  nameEl.textContent = previousValue || "Character";
-  nameEl.dataset.editing = "";
-}
-
-document.addEventListener("click", e => {
-  const tile = e.target.closest(".tile");
-  if (!tile) return;
-
-  tile.remove();
 });
 
 charactersRoot.addEventListener("click", (e) => {
@@ -576,19 +582,354 @@ charactersRoot.addEventListener("click", (e) => {
   });
 });
 
-const tierUpdaters = document.querySelectorAll(".update-role-tiers");
+function getTileType(tile) {
+  if (tile.classList.contains("role")) return "role";
+  if (tile.classList.contains("trait")) return "trait";
+  if (tile.classList.contains("situation")) return "situation";
+  if (tile.classList.contains("place")) return "place";
+  if (tile.classList.contains("task")) return "task";
+  return null;
+}
 
-tierUpdaters.forEach(updater => {
+function rerollSingleTile(tile) {
+  const type = getTileType(tile);
+  if (!type) return;
+
+  let phrase = null;
+  if (type === "role") phrase = takeFromPile(activeRoles, roleDrawPile);
+  if (type === "trait") phrase = takeFromPile(activeTraits, traitDrawPile);
+  if (type === "situation") phrase = takeFromPile(activeSituations, situationDrawPile);
+  if (type === "place") phrase = takeFromPile(activePlaces, placeDrawPile);
+  if (type === "task") phrase = takeFromPile(activeTasks, taskDrawPile);
+  if (!phrase) return;
+
+  tile.textContent = phrase;
+  updateRerollButtons();
+  updateAllCharAddDropdownButtons();
+  updateMetaUI();
+}
+
+document.addEventListener("contextmenu", (e) => {
+  const tile = e.target.closest(".tile");
+  if (!tile) return;
+  e.preventDefault();
+  rerollSingleTile(tile);
+});
+
+document.addEventListener("click", (e) => {
+  const tile = e.target.closest(".tile");
+  if (!tile) return;
+  tile.remove();
+  updateRerollButtons();
+  updateAllCharAddDropdownButtons();
+  updateMetaUI();
+});
+
+function addSituationTileToMeta() {
+  const phrase = takeFromPile(activeSituations, situationDrawPile);
+  if (!phrase) return;
+  const tile = createTile("situation", phrase);
+  metaHolder.appendChild(tile);
+  updateMetaUI();
+}
+
+function addPlaceTileToMeta() {
+  if (!allowPlace) return;
+  const phrase = takeFromPile(activePlaces, placeDrawPile);
+  if (!phrase) return;
+  const existing = metaHolder.querySelector(".tile.place");
+  if (existing) existing.remove();
+  const tile = createTile("place", phrase);
+  const taskTile = metaHolder.querySelector(".tile.task");
+  if (taskTile) metaHolder.insertBefore(tile, taskTile);
+  else {
+    const firstSituation = metaHolder.querySelector(".tile.situation");
+    if (firstSituation) metaHolder.insertBefore(tile, firstSituation);
+    else metaHolder.appendChild(tile);
+  }
+  updateMetaUI();
+}
+
+function addTaskTileToMeta() {
+  if (!allowTask) return;
+  const phrase = takeFromPile(activeTasks, taskDrawPile);
+  if (!phrase) return;
+  const existing = metaHolder.querySelector(".tile.task");
+  if (existing) existing.remove();
+  const tile = createTile("task", phrase);
+  const firstSituation = metaHolder.querySelector(".tile.situation");
+  if (firstSituation) metaHolder.insertBefore(tile, firstSituation);
+  else metaHolder.appendChild(tile);
+  const placeTile = metaHolder.querySelector(".tile.place");
+  if (placeTile) metaHolder.insertBefore(placeTile, tile);
+  updateMetaUI();
+}
+
+function clearMetaDiscard() {
+  Array.from(metaHolder.querySelectorAll(".tile")).forEach(t => t.remove());
+  updateMetaUI();
+}
+
+function resetMeta() {
+  clearMetaDiscard();
+  rebuildSituationPools();
+  rebuildPlacePools();
+  rebuildTaskPools();
+  updateMetaUI();
+}
+
+function rerollMeta() {
+  const placeCount = allowPlace ? countTiles(metaHolder, "place") : 0;
+  const taskCount = allowTask ? countTiles(metaHolder, "task") : 0;
+  const situationCount = countTiles(metaHolder, "situation");
+
+  const hasTiles = placeCount + taskCount + situationCount > 0;
+  if (!hasTiles) {
+    updateMetaUI();
+    return;
+  }
+
+  if (
+    placeDrawPile.length < placeCount ||
+    taskDrawPile.length < taskCount ||
+    situationDrawPile.length < situationCount
+  ) {
+    updateMetaUI();
+    return;
+  }
+
+  if (placeCount) addPlaceTileToMeta();
+  if (taskCount) addTaskTileToMeta();
+
+  const situationTiles = Array.from(metaHolder.querySelectorAll(".tile.situation"));
+  situationTiles.forEach(t => rerollSingleTile(t));
+
+  updateMetaUI();
+}
+
+function updateMetaUI() {
+  const rerollBtn = metaPanel.querySelector(".meta-reroll");
+  const dropdown = metaPanel.querySelector(".char-dropdown");
+
+  const placeCount = allowPlace ? countTiles(metaHolder, "place") : 0;
+  const taskCount = allowTask ? countTiles(metaHolder, "task") : 0;
+  const situationCount = countTiles(metaHolder, "situation");
+
+  const hasTiles = placeCount + taskCount + situationCount > 0;
+  const canReroll =
+    hasTiles &&
+    placeDrawPile.length >= placeCount &&
+    taskDrawPile.length >= taskCount &&
+    situationDrawPile.length >= situationCount;
+
+  if (rerollBtn) rerollBtn.disabled = !canReroll;
+
+  if (dropdown) {
+    const placeOption = dropdown.querySelector('[data-option="place"]');
+    const taskOption = dropdown.querySelector('[data-option="task"]');
+    const situationOption = dropdown.querySelector('[data-option="situation"]');
+
+    if (placeOption) placeOption.disabled = !allowPlace || placeDrawPile.length === 0;
+    if (taskOption) taskOption.disabled = !allowTask || taskDrawPile.length === 0;
+    if (situationOption) situationOption.disabled = situationDrawPile.length === 0;
+  }
+}
+
+function openMetaAddDropdown(btn) {
+  const tab = metaPanel.querySelector(".meta-tab");
+  if (!tab) return;
+
+  closeAllDropdowns();
+
+  const dropdown = document.createElement("div");
+  dropdown.className = "char-dropdown";
+
+  const placeOption = document.createElement("button");
+  placeOption.type = "button";
+  placeOption.className = "char-dropdown-item";
+  placeOption.textContent = "+ Place";
+  placeOption.dataset.option = "place";
+  placeOption.disabled = !allowPlace || placeDrawPile.length === 0;
+
+  const taskOption = document.createElement("button");
+  taskOption.type = "button";
+  taskOption.className = "char-dropdown-item";
+  taskOption.textContent = "+ Task";
+  taskOption.dataset.option = "task";
+  taskOption.disabled = !allowTask || taskDrawPile.length === 0;
+
+  const situationOption = document.createElement("button");
+  situationOption.type = "button";
+  situationOption.className = "char-dropdown-item";
+  situationOption.textContent = "+ Situation";
+  situationOption.dataset.option = "situation";
+  situationOption.disabled = situationDrawPile.length === 0;
+
+  placeOption.addEventListener("click", () => {
+    closeAllDropdowns();
+    addPlaceTileToMeta();
+  });
+
+  taskOption.addEventListener("click", () => {
+    closeAllDropdowns();
+    addTaskTileToMeta();
+  });
+
+  situationOption.addEventListener("click", () => {
+    closeAllDropdowns();
+    addSituationTileToMeta();
+  });
+
+  dropdown.appendChild(placeOption);
+  dropdown.appendChild(taskOption);
+  dropdown.appendChild(situationOption);
+  tab.appendChild(dropdown);
+
+  const tabRect = tab.getBoundingClientRect();
+  const btnRect = btn.getBoundingClientRect();
+  const centerX = btnRect.left + btnRect.width / 2;
+  const leftPx = centerX - tabRect.left;
+  dropdown.style.left = leftPx + "px";
+}
+
+document.querySelector("#meta").addEventListener("click", (e) => {
+  const rerollBtn = e.target.closest(".meta-reroll");
+  if (rerollBtn) {
+    closeAllDropdowns();
+    rerollMeta();
+    return;
+  }
+
+  const addBtn = e.target.closest(".meta-add-tile");
+  if (addBtn) {
+    const existing = metaPanel.querySelector(".char-dropdown");
+    if (existing) closeAllDropdowns();
+    else openMetaAddDropdown(addBtn);
+    return;
+  }
+
+  const clearBtn = e.target.closest(".meta-clear");
+  if (clearBtn) {
+    closeAllDropdowns();
+    clearMetaDiscard();
+    return;
+  }
+
+  const delBtn = e.target.closest(".meta-delete");
+  if (delBtn) {
+    closeAllDropdowns();
+    resetMeta();
+    return;
+  }
+});
+
+function clearMetaRefill() {
+  Array.from(metaHolder.querySelectorAll(".tile")).forEach(t => t.remove());
+}
+
+function clearAllTilesAndRefill() {
+  closeAllDropdowns();
+  const panels = charactersRoot.querySelectorAll(".panel.char");
+  panels.forEach(panel => clearCharacterTilesRefill(panel));
+  clearMetaRefill();
+  rebuildAllPools();
+  updateRerollButtons();
+  updateAllCharAddDropdownButtons();
+  updateMetaUI();
+}
+
+function buildSetCheckbox(listEl, setName, activeSetNames, onChange) {
+  const li = document.createElement("li");
+  const label = document.createElement("label");
+  label.className = "menu-item checkbox";
+
+  const input = document.createElement("input");
+  input.type = "checkbox";
+  input.checked = activeSetNames.includes(setName);
+
+  const box = document.createElement("span");
+  box.className = "box";
+  box.setAttribute("aria-hidden", "true");
+
+  const text = document.createElement("span");
+  text.className = "label-text";
+  text.textContent = setName;
+
+  label.appendChild(input);
+  label.appendChild(box);
+  label.appendChild(text);
+  li.appendChild(label);
+  listEl.appendChild(li);
+
+  input.addEventListener("change", (e) => {
+    const checked = e.target.checked;
+    const idx = activeSetNames.indexOf(setName);
+    if (checked && idx === -1) activeSetNames.push(setName);
+    if (!checked && idx !== -1) activeSetNames.splice(idx, 1);
+    onChange();
+  });
+}
+
+function rebuildSetMenu(listEl, map, activeSetNames, onChange) {
+  while (listEl.children.length > 1) listEl.removeChild(listEl.lastChild);
+  const setNames = Array.from(map.keys()).sort((a, b) => a.localeCompare(b));
+  setNames.forEach(setName => buildSetCheckbox(listEl, setName, activeSetNames, onChange));
+}
+
+function buildSetsMenus() {
+  rebuildSetMenu(setsRoleList, roles, activeRoleSets, () => {
+    rebuildRolePools();
+    updateRerollButtons();
+    updateAllCharAddDropdownButtons();
+  });
+
+  rebuildSetMenu(setsTraitList, traits, activeTraitSets, () => {
+    rebuildTraitPools();
+    updateRerollButtons();
+    updateAllCharAddDropdownButtons();
+  });
+
+  rebuildSetMenu(setsSituationList, situations, activeSituationSets, () => {
+    rebuildSituationPools();
+    updateMetaUI();
+  });
+
+  rebuildSetMenu(setsPlaceList, places, activePlaceSets, () => {
+    rebuildPlacePools();
+    updateMetaUI();
+  });
+
+  rebuildSetMenu(setsTaskList, tasks, activeTaskSets, () => {
+    rebuildTaskPools();
+    updateMetaUI();
+  });
+}
+
+async function loadSetsInto(map, folder) {
+  const manifestRes = await fetch(`${folder}/index.json`);
+  const files = await manifestRes.json();
+
+  for (const file of files) {
+    const res = await fetch(`${folder}/${file}`);
+    const text = await res.text();
+    const setName = file.replace(/\.set$/, "");
+    map.set(setName, parseSetEntries(text));
+  }
+}
+
+const powerTierUpdaters = document.querySelectorAll(".update-power-tiers");
+
+powerTierUpdaters.forEach(updater => {
   updater.addEventListener("click", (event) => {
     let count = 0;
-    tierUpdaters.forEach(checkbox => {
+    powerTierUpdaters.forEach(checkbox => {
       if (checkbox.checked) count++;
     });
     if (count === 0) event.preventDefault();
   });
 });
 
-tierUpdaters.forEach(updater => {
+powerTierUpdaters.forEach(updater => {
   updater.addEventListener("change", (event) => {
     const isChecked = event.target.checked;
     const chars = updater.dataset.chars;
@@ -596,70 +937,49 @@ tierUpdaters.forEach(updater => {
     if (isChecked) activePowerTiers = chars + activePowerTiers;
     else activePowerTiers = activePowerTiers.replaceAll(chars, "");
 
-    updateActiveRoles();
-    refillRoleDrawPile();
+    rebuildAllPools();
 
-    updateActiveTraits();
-    refillTraitDrawPile();
-
-    closeAllCharDropdowns();
+    closeAllDropdowns();
     updateRerollButtons();
     updateAllCharAddDropdownButtons();
+    updateMetaUI();
   });
 });
 
-async function loadRoleSets() {
-  const manifestRes = await fetch("/roles/index.json");
-  const files = await manifestRes.json();
+togglePlaceEl.addEventListener("change", (e) => {
+  allowPlace = e.target.checked;
+  if (!allowPlace) discardTiles(metaHolder, "place");
+  closeAllDropdowns();
+  updateMetaUI();
+});
 
-  for (const file of files) {
-    const res = await fetch(`/roles/${file}`);
-    const text = await res.text();
-    const setName = file.replace(/\.set$/, "");
-
-    const entries = text
-      .split("\n")
-      .map(l => l.trim())
-      .filter(l => l && !l.startsWith("#"));
-
-    roles.set(setName, entries);
-  }
-}
-
-async function loadTraitSets() {
-  const manifestRes = await fetch("/traits/index.json");
-  const files = await manifestRes.json();
-
-  for (const file of files) {
-    const res = await fetch(`/traits/${file}`);
-    const text = await res.text();
-    const setName = file.replace(/\.set$/, "");
-
-    const entries = text
-      .split("\n")
-      .map(l => l.trim())
-      .filter(l => l && !l.startsWith("#"));
-
-    traits.set(setName, entries);
-  }
-}
+toggleTaskEl.addEventListener("change", (e) => {
+  allowTask = e.target.checked;
+  if (!allowTask) discardTiles(metaHolder, "task");
+  closeAllDropdowns();
+  updateMetaUI();
+});
 
 clearTilesBtn.addEventListener("click", () => {
-  closeAllCharDropdowns();
   clearAllTilesAndRefill();
 });
 
 (async () => {
-  await loadRoleSets();
-  updateActiveRoles();
-  refillRoleDrawPile();
+  await loadSetsInto(roles, "roles");
+  await loadSetsInto(traits, "traits");
+  await loadSetsInto(situations, "situations");
+  await loadSetsInto(places, "places");
+  await loadSetsInto(tasks, "tasks");
 
-  await loadTraitSets();
-  updateActiveTraits();
-  refillTraitDrawPile();
+  allowPlace = togglePlaceEl.checked;
+  allowTask = toggleTaskEl.checked;
+
+  rebuildAllPools();
+  buildSetsMenus();
 
   updateRerollButtons();
   updateAllCharAddDropdownButtons();
+  updateMetaUI();
 })();
 
 setActive("setup");
