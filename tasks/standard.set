@@ -1,18 +1,19 @@
 # Small Stakes
-<A Find a Lost Key
-<A Deliver a Note Without Being Seen
-<A Keep a Plant Alive for One Day
--A Win a Petty Argument
--A Sneak Past a Single Guard
--A Fix Something With Duct Tape
+<Find a Lost Key
+<Deliver a Note Without Being Seen
+<Keep a Plant Alive for One Month
+-Win a Petty Argument
+-Sneak Past a Single Guard
+-Fix Something With Duct Tape
 
 # Medium Stakes
 =Convince a Crowd to Trust You
 =Steal Something Valuable
-=Escape a Locked Room
+=Beat an Escape Room
 =Protect Someone Who Hates You
-=Outrun a Vehicle on Foot
-=Solve a Puzzle Under Pressure
+=Outrun a Bugatti on Foot
+=Solve a Puzzle
+#               While ___
 
 # High Stakes
 +Stop a Heist in Progress
@@ -26,4 +27,3 @@
 >Stop Time From Collapsing
 >Win a Trial Against Destiny
 >Seal an Ancient Evil Forever
->Rewrite the Rules of Reality
