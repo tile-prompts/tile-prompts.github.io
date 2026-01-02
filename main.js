@@ -983,25 +983,17 @@ clearTilesBtn.addEventListener("click", () => {
 })();
 
 document.addEventListener("keydown", (event) => {
-  console.log("event.which: " + event.which);
-  if (event.which === 192) {
-    console.log("192");
-    console.log("");
-    activeTraits.forEach(trait => {
-      console.log(trait);
-    });
-    activeRoles.forEach(role => {
-      console.log(role);
-    });
-    activeSituations.forEach(situation => {
-      console.log(situation);
-    });
-    activeTasks.forEach(task => {
-      console.log(task);
-    });
-    activePlaces.forEach(place => {
-      console.log(place);
-    });
+  console.log("key:", event.key);
+  console.log("code:", event.code);
+
+  if (event.code === "Backquote") {
+    console.log("Backquote pressed");
+
+    activeTraits.forEach(trait => console.log(trait));
+    activeRoles.forEach(role => console.log(role));
+    activeSituations.forEach(situation => console.log(situation));
+    activeTasks.forEach(task => console.log(task));
+    activePlaces.forEach(place => console.log(place));
   }
 });
 
