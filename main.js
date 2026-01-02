@@ -982,7 +982,7 @@ clearTilesBtn.addEventListener("click", () => {
   updateMetaUI();
 })();
 
-document.addEventListener(event => {
+document.addEventListener("keydown", event => {
   console.log("event.which: " + event.which);
   if (event.which === 192) {
     console.log("192");
