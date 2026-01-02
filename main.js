@@ -989,10 +989,24 @@ document.addEventListener("keydown", (event) => {
   if (event.code === "Backquote") {
     console.log("Backquote pressed");
 
+    console.log("");
+    console.log("TRAITS");
     activeTraits.forEach(trait => console.log(trait));
+    
+    console.log("");
+    console.log("ROLES");
     activeRoles.forEach(role => console.log(role));
+    
+    console.log("");
+    console.log("SITUATIONS");
     activeSituations.forEach(situation => console.log(situation));
+    
+    console.log("");
+    console.log("TASKS");
     activeTasks.forEach(task => console.log(task));
+    
+    console.log("");
+    console.log("PLACES");
     activePlaces.forEach(place => console.log(place));
   }
 });
