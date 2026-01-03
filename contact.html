@@ -3,54 +3,43 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Contact • Tile Prompt Generator</title>
+  <title>Contact - TPG</title>
   <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="contact.css">
+  <script src="main.js" defer></script>
 </head>
 <body>
 <main class="page">
-  <div class="content">
-    <div id="setup">
-      <section class="panel left" aria-label="Navigation">
-        <div class="panel-body">
-          <ul class="menu-list">
-            <li><a class="menu-item" href="index.html">Home</a></li>
-            <li><a class="menu-item" href="about.html">About</a></li>
-            <li><a class="menu-item" href="contact.html" aria-current="page">Contact</a></li>
-            <li><a class="menu-item" href="donate.html">Donate</a></li>
-          </ul>
-        </div>
-      </section>
+  <div class="panel site-meta" aria-label="Contact">
+    <div class="char-tab">
+      <div class="char-name">Contact</div>
     </div>
-
-    <div id="prompt">
-      <div id="characters">
-        <section class="panel char" aria-label="Contact">
-          <div class="char-tab">
-            <div class="char-name">Contact</div>
+    <div class="panel-body">
+      <div class="contact-grid">
+        <a class="panel contact-tile" href="faq.html">
+          <div class="tab">FAQ</div>
+          <div class="tile-body">
+            <img class="tile-icon" src="assets/icons/faq.svg" alt="FAQ">
           </div>
-          <div class="panel-body">
-            <div>
-              This site is hosted as static pages. The simplest way to contact the maintainer is to use the project’s GitHub repository.
-            </div>
-            <div>
-              If you found a bug or want a new feature, open an issue or a pull request.
-            </div>
+        </a>
+        <a class="panel contact-tile" href="mailto:FleeceComrade@gmail.com" data-copy="FleeceComrade@gmail.com">
+          <div class="tab">Reach Out</div>
+          <div class="tile-body">
+            <img class="tile-icon" src="assets/icons/email.svg" alt="Email">
           </div>
-        </section>
-        <section class="panel" aria-label="Spacer"></section>
-      </div>
-
-      <div id="meta">
-        <section class="panel char" aria-label="Links">
-          <div class="char-tab">
-            <div class="char-name">Links</div>
+        </a>
+        <a class="panel contact-tile" href="https://github.com/tile-prompts/tile-prompts.github.io" target="_blank" rel="noopener">
+          <div class="tab">Contribute/Report Issues</div>
+          <div class="tile-body">
+            <img class="tile-icon" src="assets/icons/github.svg" alt="GitHub">
           </div>
-          <div class="panel-body">
-            <ul>
-              <li><a href="index.html">Back to the generator</a></li>
-            </ul>
+        </a>
+        <a class="panel contact-tile" href="https://discord.com/invite/RrY3rXuAH5">
+          <div class="tab">Socialize</div>
+          <div class="tile-body">
+            <img class="tile-icon" src="assets/icons/discord.svg" alt="Discord">
           </div>
-        </section>
+        </a>
       </div>
     </div>
   </div>
@@ -60,11 +49,13 @@
   <div class="footer-inner">
     <div class="license">Tile Prompt Generator. © FleeceComrade 2025. All Rights Reserved.</div>
     <nav class="footer-links" aria-label="Footer Links">
-      <a href="contact.html">Contact</a>
-      <a href="donate.html">Donate</a>
-      <a href="about.html">About</a>
+      <a href="index.html">Home</a>
+      <a class="disabled">Contact</a>
+      <a href="https://account.venmo.com/u/Quinn-Mills-1">Donate</a>
+      <a href="faq.html">FAQ</a>
     </nav>
   </div>
 </footer>
+<script src="contact.js"></script>
 </body>
 </html>

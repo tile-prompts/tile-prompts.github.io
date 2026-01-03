@@ -107,7 +107,7 @@ main.page {
   flex: 1 1;
 }
 
-.panel::before {
+.panel:not(.site-meta)::before {
   content: "";
   position: absolute;
   inset: -2px;
@@ -827,4 +827,31 @@ footer {
 
   color: rgba(255, 245, 248, 0.88);
   text-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+}
+
+.site-meta {
+  height: 99%;
+  width: 99vw;
+  overflow-y: auto;
+  margin: var(--gap);
+}
+
+.auto-copy {
+  cursor: copy;
+  position: relative;
+  text-decoration: none;
+  color: var(--accent, #9fd3ff);
+  border-bottom: 1px dashed rgba(159, 211, 255, 0.45);
+  transition: color 0.15s ease, border-color 0.15s ease, text-shadow 0.15s ease;
+}
+
+.auto-copy:hover {
+  color: #d9efff;
+  border-bottom-color: rgba(217, 239, 255, 0.75);
+  text-shadow: 0 0 6px rgba(159, 211, 255, 0.35);
+}
+
+.auto-copy:active {
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(159, 211, 255, 0.6);
 }

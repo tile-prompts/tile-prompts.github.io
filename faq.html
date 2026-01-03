@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FAQ • Tile Prompt Generator</title>
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="faq.css">
+  <script src="main.js" defer></script>
+</head>
+<body>
+<main class="page">
+  <section class="panel site-meta" aria-label="FAQ">
+    <div class="char-tab">
+      <div class="char-name">FAQ</div>
+    </div>
+
+    <div class="panel-body">
+      <div class="faq-wrap">
+        <header class="faq-intro">
+          <h1 class="faq-title">Frequently Asked Questions</h1>
+          <p class="faq-subtitle">
+            Quick answers to the common stuff: how tiles work, how the draw-pile and rerolls behave, what “sets” are, etc.
+          </p>
+        </header>
+
+        <section class="faq-grid" aria-label="FAQ Items">
+          <div class="faq-card">
+            <details class="faq-item">
+              <summary>
+                <span class="faq-q">
+                  <strong>What is this site, exactly?</strong>
+                  <span class="faq-chip">Basics</span>
+                </span>
+                <span class="faq-caret" aria-hidden="true">▼</span>
+              </summary>
+              <div class="faq-a">
+                <p>
+                  Tile-Prompts is a static, no-login prompt generator. You build a prompt by drawing tiles (Roles, Traits, Situations, Place, and Task).
+                </p>
+                <p class="muted">
+                  Think “prompt lego's”: snap together a few character role and trait tiles, then add a shared situations, places, and tasks.
+                </p>
+              </div>
+            </details>
+          </div>
+
+          <div class="faq-card">
+            <details class="faq-item">
+              <summary>
+                <span class="faq-q">
+                  <strong>Why can I draw multiple Roles even though it doesn't always make sense</strong>
+                  <span class="faq-chip">Rules</span>
+                </span>
+                <span class="faq-caret" aria-hidden="true">▼</span>
+              </summary>
+              <div class="faq-a">
+                <p>
+                  Traits are character-specific, and Situations are “global modifiers” that stack nicely. Place and Task act more like single anchors:
+                  one setting and one win-condition keeps the prompt cohesive. Roles are a bit of an anomaly, they can sometimes fit well together, so
+                  I left the ability to have more than one. This allows a character to be "A Wizard" and "A Dragon" at the same time. Sometimes it doesn't
+                  work at all though, and you get something like "A Single Sugar Ant" and "Your Middle-School Janitor".
+                </p>
+                <p class="muted">
+                  Feel free to contact me if you have ideas or suggestions relating to this issue.
+                </p>
+              </div>
+            </details>
+          </div>
+
+          <div class="faq-card">
+            <details class="faq-item">
+              <summary>
+                <span class="faq-q">
+                  <strong>What does the “Sets” tab do?</strong>
+                  <span class="faq-chip">Content</span>
+                </span>
+                <span class="faq-caret" aria-hidden="true">▼</span>
+              </summary>
+              <div class="faq-a">
+                <p>
+                  Sets are content packs. Turning a set on adds its entries into the active pool for that tile type; turning it off removes them from future draws.
+                </p>
+                <p>
+                  If you’re looking for a specific vibe, toggling sets is the fastest way to steer the generator.
+                </p>
+              </div>
+            </details>
+          </div>
+
+          <div class="faq-card">
+            <details class="faq-item">
+              <summary>
+                <span class="faq-q">
+                  <strong>Why is a button disabled sometimes?</strong>
+                  <span class="faq-chip">UI</span>
+                </span>
+                <span class="faq-caret" aria-hidden="true">▼</span>
+              </summary>
+              <div class="faq-a">
+                <p>
+                  Usually it means there isn’t enough content in the relevant draw pile to complete the action safely (especially rerolls),
+                  or a feature is intentionally not available yet.
+                </p>
+                <p class="muted">
+                  If you disabled most sets or tiers, try re-enabling them to refill the available pool.
+                </p>
+              </div>
+            </details>
+          </div>
+
+          <div class="faq-card">
+            <details class="faq-item">
+              <summary>
+                <span class="faq-q">
+                  <strong>I’m “out of tiles.” How do I reset things?</strong>
+                  <span class="faq-chip">Troubleshooting</span>
+                </span>
+                <span class="faq-caret" aria-hidden="true">▼</span>
+              </summary>
+              <div class="faq-a">
+                <p>
+                  Use <b>Clear All Tiles</b> in the Setup menu. That clears placed tiles and refills the draw piles based on your enabled sets and tier filters.
+                </p>
+                <p class="muted">
+                  If you want more variety, enable additional sets.
+                </p>
+              </div>
+            </details>
+          </div>
+
+          <div class="faq-card">
+            <details class="faq-item">
+              <summary>
+                <span class="faq-q">
+                  <strong>Can I add my own sets?</strong>
+                  <span class="faq-chip">Custom</span>
+                </span>
+                <span class="faq-caret" aria-hidden="true">▼</span>
+              </summary>
+              <div class="faq-a">
+                <p>
+                  Yep. This project is designed around text-based sets. If you wish to contribute on the GitHub, the simplest path is to add a new <b>.set</b> file in the appropriate folder and include it in that folder’s <b>index.json</b>.
+                </p>
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <section class="faq-callouts" aria-label="FAQ Callouts">
+          <div class="faq-callout">
+            <h2 class="faq-callout-title">Fastest way to get a good prompt</h2>
+            <p>Create 2–3 characters total, give each character 1 Role, then add 1–2 Traits per character, add a 1-2 Situations, then lock in Place and Task last. For simpler prompts only do one thing at a time in the meta panel.</p>
+          </div>
+          <div class="faq-callout">
+            <h2 class="faq-callout-title">Need help or want to contribute?</h2>
+            <p>
+              Head to <a href="contact.html">Contact</a> for links. If you found a bug, include what you clicked and what you expected to happen.
+            </p>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="license">Tile Prompt Generator. © FleeceComrade 2025. All Rights Reserved.</div>
+    <nav class="footer-links" aria-label="Footer Links">
+      <a href="index.html">Home</a>
+      <a href="contact.html">Contact</a>
+      <a href="https://account.venmo.com/u/Quinn-Mills-1">Donate</a>
+      <a class="disabled">FAQ</a>
+    </nav>
+  </div>
+</footer>
+</body>
+</html>

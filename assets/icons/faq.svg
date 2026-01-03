@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="7 9 114 115"
+>
+    <!-- Outer circle -->
+    <circle
+            cx="64"
+            cy="66"
+            r="54"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="6"
+    />
+
+    <!-- Question mark stem -->
+    <path
+            d="
+      M64 36
+      c-11 0-20 7-20 18
+      h10
+      c0-5 4-8 10-8
+      s10 3 10 8
+      c0 5-3 7-9 11
+      c-7 4-11 9-11 17
+      v4
+      h10
+      v-3
+      c0-5 3-7 9-11
+      c7-4 11-9 11-18
+      c0-11-9-18-20-18
+      z
+    "
+            fill="#ffffff"
+    />
+
+    <!-- Dot (horizontal optical correction) -->
+    <circle
+            cx="59.25"
+            cy="94"
+            r="5"
+            fill="#ffffff"
+    />
+</svg>
